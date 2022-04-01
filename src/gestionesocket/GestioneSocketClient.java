@@ -3,21 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gestonesocket;
+package gestionesocket;
 
 /**
  *
  * @author mauri
  */
-public class GestoneSocketServer {
-
+public class GestioneSocketClient {
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Server server = new Server();
-        server.comunica();
-        server.chiudi();
+        Client client = new Client();
+        client.comunica();
+        client.chiudi();
     }
     
 }
