@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="Java TPSIT">
-            <file>file:/C:/Users/mauri/Documents/NetBeansProjects/Java%20Informatica/GestoneSocket/src/gestonesocket/GestoneSocketServer.java</file>
-            <file>file:/C:/Users/mauri/Documents/NetBeansProjects/Java%20Informatica/GestoneSocket/src/gestonesocket/GestioneSocketClient.java</file>
+            <file>file:/C:/Users/mauri/Documents/NetBeansProjects/Java%20TPSIT/GestoneSocket/src/gestonesocket/GestioneSocketClient.java</file>
+            <file>file:/C:/Users/mauri/Documents/NetBeansProjects/Java%20TPSIT/GestoneSocket/src/gestonesocket/Client.java</file>
+            <file>file:/C:/Users/mauri/Documents/NetBeansProjects/Java%20TPSIT/GestoneSocket/src/gestonesocket/GestoneSocketServer.java</file>
+            <file>file:/C:/Users/mauri/Documents/NetBeansProjects/Java%20TPSIT/GestoneSocket/src/gestonesocket/Server.java</file>
         </group>
     </open-files>
 </project-private>
