@@ -18,7 +18,7 @@ import java.net.Socket;
  */
 public class Server {
     
-    int portaServer = 2000;
+    int portaServer;
     ServerSocket serverSocket;
     Socket socket;
     BufferedReader inDalClient;
@@ -29,12 +29,13 @@ public class Server {
     public Server(){
         try {
             //Apertura della porta di ascolto del server
+            portaServer = 2000;
             serverSocket = new ServerSocket(portaServer);
             System.out.println("Server avviato correttamente");
             //Il server accetta le richieste del client
             socket = serverSocket.accept();
             System.out.println("Connessione stabilita");
-            System.out.println("Socket: "+socket);
+            System.out.println("Socket creato: "+socket);
         } catch (ConnectException ex) {
             System.err.print(ex);
         } catch (IOException ex) {
@@ -48,10 +49,16 @@ public class Server {
             inDalClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             outVersoClient = new DataOutputStream(socket.getOutputStream());
             //Invio e ricezione di messaggi con il server
-            messaggioDaInviare = "Benvenuto!";
+            messaggioDaInviare = "Benvenuto!\n";
             outVersoClient.writeBytes(messaggioDaInviare);
-            //messaggioRicevuto = inDalClient.readLine();
-            //System.out.println("Il client risponde: "+messaggioRicevuto);
+            outVersoClient.flush();
+            messaggioRicevuto = inDalClient.readLine();
+            if(messaggioRicevuto.equals("data"))
+                messaggioDaInviare = Long.toString(System.currentTimeMillis());
+            else
+                messaggioDaInviare = "1";
+            outVersoClient.writeBytes(messaggioDaInviare+"\n");
+            outVersoClient.flush();
         } catch (IOException ex) {
             System.err.print(ex);
         }

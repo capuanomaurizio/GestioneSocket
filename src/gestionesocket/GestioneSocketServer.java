@@ -9,7 +9,7 @@ package gestionesocket;
  *
  * @author mauri
  */
-public class GestoneSocketServer {
+public class GestioneSocketServer {
 
     /**
      * @param args the command line arguments

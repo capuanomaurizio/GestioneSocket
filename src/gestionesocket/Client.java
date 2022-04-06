@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 
 /**
  *
@@ -19,7 +20,8 @@ import java.net.UnknownHostException;
  */
 public class Client {
     
-    int portaServer = 2000; 
+    InetAddress indirizzoServer;
+    int portaServer;
     Socket socket;
     BufferedReader tastiera;
     BufferedReader inDalServer;
@@ -30,7 +32,9 @@ public class Client {
     public Client(){
         try {
             //Richiesta di connessione al server
-            socket = new Socket(InetAddress.getLocalHost(), 2000);
+            indirizzoServer = InetAddress.getLocalHost();
+            portaServer = 2000;
+            socket = new Socket(indirizzoServer, portaServer);
         } catch (UnknownHostException ex) {
             System.out.println("Errore, host inesistente");
             System.err.print(ex);
@@ -51,7 +55,16 @@ public class Client {
             System.out.println("Il server dice: "+messaggioRicevuto);
             System.out.print("La tua risposta al server: ");
             messaggioDaInviare = tastiera.readLine();
-            outVersoServer.writeBytes(messaggioDaInviare);
+            outVersoServer.writeBytes(messaggioDaInviare+"\n");
+            outVersoServer.flush();
+            messaggioRicevuto = inDalServer.readLine();
+            if(!messaggioRicevuto.equals("1")){
+                Timestamp serverDate = new Timestamp(Long.parseLong(messaggioRicevuto));
+                System.out.println("Data del server: "+serverDate);
+            }
+            else{
+                System.out.println("Richiesta impartita non valida");
+            }
         } catch (IOException ex) {
             System.err.print(ex);
         }
