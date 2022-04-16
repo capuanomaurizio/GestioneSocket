@@ -6,9 +6,10 @@
 package gestionesocket;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,14 +23,14 @@ public class Server {
     ServerSocket serverSocket;
     Socket socket;
     BufferedReader inDalClient;
-    DataOutputStream outVersoClient;
+    BufferedWriter outVersoClient;
     String messaggioRicevuto;
     String messaggioDaInviare;
     
-    public Server(){
+    public Server(int porta){
         try {
             //Apertura della porta di ascolto del server
-            portaServer = 2000;
+            portaServer = porta;
             serverSocket = new ServerSocket(portaServer);
             System.out.println("Server avviato correttamente");
             //Il server accetta le richieste del client
@@ -43,25 +44,40 @@ public class Server {
         }
     }
     
-    public void comunica(){
+    public void scrivi(String messaggioDaInviare){
         try {
             //Inizializzazione degli oggetti di comunicazione lato server
-            inDalClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            outVersoClient = new DataOutputStream(socket.getOutputStream());
-            //Invio e ricezione di messaggi con il server
-            messaggioDaInviare = "Benvenuto!\n";
-            outVersoClient.writeBytes(messaggioDaInviare);
-            outVersoClient.flush();
-            messaggioRicevuto = inDalClient.readLine();
-            if(messaggioRicevuto.equals("data"))
-                messaggioDaInviare = Long.toString(System.currentTimeMillis());
-            else
-                messaggioDaInviare = "1";
-            outVersoClient.writeBytes(messaggioDaInviare+"\n");
+            outVersoClient = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            //Invio del messaggio
+            outVersoClient.write(messaggioDaInviare+"\n");
             outVersoClient.flush();
         } catch (IOException ex) {
             System.err.print(ex);
         }
+    }
+    
+    public String leggi(){
+        try {
+            //Inizializzazione degli oggetti di comunicazione lato server
+            inDalClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            //Lettura del messaggio
+            messaggioRicevuto = inDalClient.readLine();
+            return messaggioRicevuto;
+        } catch (IOException ex) {
+            System.err.print(ex);
+            return "-1";
+        }
+    }
+    
+    public void inviaTimeStamp(){
+        messaggioRicevuto = leggi();
+        switch(messaggioRicevuto){
+            case "data": messaggioDaInviare = Long.toString(System.currentTimeMillis());
+                         System.out.println("Invio timestamp");
+                         break;
+            default: messaggioDaInviare = "invalid"; break;
+        }            
+        scrivi(messaggioDaInviare);
     }
     
     public void chiudi(){

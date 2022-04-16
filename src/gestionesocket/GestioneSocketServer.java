@@ -15,8 +15,9 @@ public class GestioneSocketServer {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Server server = new Server();
-        server.comunica();
+        Server server = new Server(4444);
+        server.scrivi("Buongiorno!");
+        server.inviaTimeStamp();
         server.chiudi();
     }
     

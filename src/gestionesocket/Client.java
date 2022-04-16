@@ -6,9 +6,10 @@
 package gestionesocket;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -25,15 +26,15 @@ public class Client {
     Socket socket;
     BufferedReader tastiera;
     BufferedReader inDalServer;
-    DataOutputStream outVersoServer;
+    BufferedWriter outVersoServer;
     String messaggioRicevuto;
     String messaggioDaInviare;
     
-    public Client(){
+    public Client(InetAddress indirizzo, int porta){
         try {
             //Richiesta di connessione al server
-            indirizzoServer = InetAddress.getLocalHost();
-            portaServer = 2000;
+            indirizzoServer = indirizzo;
+            portaServer = porta;
             socket = new Socket(indirizzoServer, portaServer);
         } catch (UnknownHostException ex) {
             System.out.println("Errore, host inesistente");
@@ -44,26 +45,60 @@ public class Client {
         }
     }
     
-    public void comunica(){
+    public void scrivi(){
         try {
-            //Inizializzazione degli oggetti di comunicazione lato client
-            inDalServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            outVersoServer = new DataOutputStream(socket.getOutputStream());
+            //Inizializzazione degli oggetti di comunicazione lato server
             tastiera = new BufferedReader(new InputStreamReader(System.in));
-            //Invio e ricezione di messaggi con il server
-            messaggioRicevuto = inDalServer.readLine();
-            System.out.println("Il server dice: "+messaggioRicevuto);
-            System.out.print("La tua risposta al server: ");
+            outVersoServer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            //Input da tastiera
             messaggioDaInviare = tastiera.readLine();
-            outVersoServer.writeBytes(messaggioDaInviare+"\n");
+            //Invio del messaggio
+            outVersoServer.write(messaggioDaInviare+"\n");
             outVersoServer.flush();
+        } catch (IOException ex) {
+            System.err.print(ex);
+        }
+    }
+    
+    public void scrivi(String messaggioDaInviare){
+        try {
+            //Inizializzazione degli oggetti di comunicazione lato server
+            tastiera = new BufferedReader(new InputStreamReader(System.in));
+            outVersoServer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            //Invio del messaggio
+            outVersoServer.write(messaggioDaInviare+"\n");
+            outVersoServer.flush();
+        } catch (IOException ex) {
+            System.err.print(ex);
+        }
+    }
+    
+    public String leggi(){
+        try {
+            //Inizializzazione degli oggetti di comunicazione lato server
+            inDalServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            //Lettura del messaggio
             messaggioRicevuto = inDalServer.readLine();
-            if(!messaggioRicevuto.equals("1")){
-                Timestamp serverDate = new Timestamp(Long.parseLong(messaggioRicevuto));
-                System.out.println("Data del server: "+serverDate);
-            }
-            else{
-                System.out.println("Richiesta impartita non valida");
+            return messaggioRicevuto;
+        } catch (IOException ex) {
+            System.err.print(ex);
+            return "-1";
+        }
+    }
+    
+    public void chiediTimeStamp(){
+        try {
+            //Invio messaggio di richiesta timestamp
+            scrivi("data");
+            
+            //Interpretazione del responso
+            inDalServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            messaggioRicevuto = inDalServer.readLine();
+            switch(messaggioRicevuto){
+                case "invalid": System.out.println("Richiesta impartita non valida"); break;
+                default: Timestamp serverDate = new Timestamp(Long.parseLong(messaggioRicevuto));
+                         System.out.println("Data del server: "+serverDate);
+                         break;
             }
         } catch (IOException ex) {
             System.err.print(ex);
