@@ -16,6 +16,7 @@ public class GestioneSocketServer {
      */
     public static void main(String[] args) {
         Server server = new Server(4444);
+        server.attenti();
         server.scrivi("Buongiorno!");
         server.inviaTimeStamp();
         server.chiudi();

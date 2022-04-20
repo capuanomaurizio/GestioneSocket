@@ -33,14 +33,20 @@ public class Server {
             portaServer = porta;
             serverSocket = new ServerSocket(portaServer);
             System.out.println("Server avviato correttamente");
-            //Il server accetta le richieste del client
-            socket = serverSocket.accept();
-            System.out.println("Connessione stabilita");
-            System.out.println("Socket creato: "+socket);
         } catch (ConnectException ex) {
             System.err.print(ex);
         } catch (IOException ex) {
             System.err.print(ex);
+        }
+    }
+    
+    public void attenti(){
+        try {
+            socket = serverSocket.accept();
+            System.out.println("Connessione stabilita");
+            System.out.println("Socket creato: "+socket);
+        } catch (IOException ex) {
+            System.out.print(ex);
         }
     }
     
