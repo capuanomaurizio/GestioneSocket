@@ -40,7 +40,7 @@ public class Server {
         }
     }
     
-    public void attenti(){
+    public void attendi(){
         try {
             socket = serverSocket.accept();
             System.out.println("Connessione stabilita");
